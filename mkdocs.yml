@@ -2,3 +2,35 @@ site_name: MintLog
 site_url: https://mintropy.github.io/mint-log/
 theme:
   name: material
+  language: ko
+  features:
+    - search.suggest
+    - search.highlight
+    # - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    # - navigation.footer
+plugins:
+  - search
+  - blog:
+      draft: true
+      draft_on_serve: false
+      categories_name: 카테고리
+nav:
+  - Home: index.md
+  - Blog:
+      - blog/index.md
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - admonition
+  - pymdownx.details
