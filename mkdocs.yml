@@ -13,8 +13,8 @@ theme:
 plugins:
   - search
   - blog:
-      draft: true
-      draft_on_serve: false
+      # draft: true
+      # draft_on_serve: false
       categories_name: 카테고리
 nav:
   - Home: index.md
@@ -34,3 +34,4 @@ markdown_extensions:
           format: !!python/name:pymdownx.superfences.fence_code_format
   - admonition
   - pymdownx.details
+  - footnotes
