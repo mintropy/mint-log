@@ -1,6 +1,7 @@
 ---
-categories: 
-date: 
+categories:
+  - python
+date:
 draft: true
 ---
 Python 클래스에서 메서드는 객체 지향 프로그래밍의 핵심 개념 중 하나로, 클래스와 연관된 객체의 동작을 규정하기 위한 함수들이다. 그 중 유사해보여 궁금했던 instance method, static method, class method에 대해 조금 더 고민해 보았다.
