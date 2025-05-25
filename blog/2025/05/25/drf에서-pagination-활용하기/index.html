@@ -1,0 +1,1024 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://mintropy.github.io/mint-log/blog/2025/05/25/drf%EC%97%90%EC%84%9C-pagination-%ED%99%9C%EC%9A%A9%ED%95%98%EA%B8%B0/">
+      
+      
+        <link rel="prev" href="../../../../2024/11/16/django-path-converterurl-path-parameter/">
+      
+      
+      
+      <link rel="icon" href="../../../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.14">
+    
+    
+      
+        <title>DRF에서 Pagination 활용하기 - MintLog</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../../../assets/stylesheets/main.342714a4.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../../../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#_1" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href="../../../../.." title="MintLog" class="md-header__button md-logo" aria-label="MintLog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            MintLog
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              DRF에서 Pagination 활용하기
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" hidden>
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../../../.." title="MintLog" class="md-nav__button md-logo" aria-label="MintLog" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    MintLog
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../../../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    Blog
+    
+  </span>
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_2" id="__nav_2_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            Blog
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_2" id="__nav_2_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    아카이브
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_2">
+            <span class="md-nav__icon md-icon"></span>
+            아카이브
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2025/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2025
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../archive/2024/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    2024
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_2_3" id="__nav_2_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    카테고리
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2_3">
+            <span class="md-nav__icon md-icon"></span>
+            카테고리
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/django/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    django
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/drf/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    drf
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+    
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../../category/python/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    python
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+                
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      페이지네이션
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#page-num-limit-offset" class="md-nav__link">
+    <span class="md-ellipsis">
+      page num 페이지네이션과 limit offset 페이지네이션
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      cursor 방식으로 페이지네이션 구현하기
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="cursor 방식으로 페이지네이션 구현하기">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cursor_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      cursor 방식의 특징
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#django-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      Django에서 cursor방식으로 구현해보기
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Django에서 cursor방식으로 구현해보기">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#cursor_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      cursor의 중복 문제
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#drf-cursor" class="md-nav__link">
+    <span class="md-ellipsis">
+      DRF에서 구현된 cursor 페이지네이션
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#_2" class="md-nav__link">
+    <span class="md-ellipsis">
+      그렇다면 어떤 방식을 사용해야할까
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="그렇다면 어떤 방식을 사용해야할까">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      데이터 중복
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cursor_3" class="md-nav__link">
+    <span class="md-ellipsis">
+      cursor 방식으로 해결해보기
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#_4" class="md-nav__link">
+    <span class="md-ellipsis">
+      요약
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+  <div class="md-content md-content--post" data-md-component="content">
+    <div class="md-sidebar md-sidebar--post" data-md-component="sidebar" data-md-type="navigation">
+      <div class="md-sidebar__scrollwrap">
+        <div class="md-sidebar__inner md-post">
+          <nav class="md-nav md-nav--primary">
+            <div class="md-post__back">
+              <div class="md-nav__title md-nav__container">
+                <a href="../../../../" class="md-nav__link">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+                  <span class="md-ellipsis">
+                    Index로 돌아가기
+                  </span>
+                </a>
+              </div>
+            </div>
+            
+            <ul class="md-post__meta md-nav__list">
+              <li class="md-nav__item md-nav__item--section">
+                <div class="md-post__title">
+                  <span class="md-ellipsis">
+                    메타데이터
+                  </span>
+                </div>
+                <nav class="md-nav">
+                  <ul class="md-nav__list">
+                    <li class="md-nav__item">
+                      <div class="md-nav__link">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 19H5V8h14m-3-7v2H8V1H6v2H5c-1.11 0-2 .89-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2h-1V1m-1 11h-5v5h5z"/></svg>
+                        <time datetime="2025-05-25 00:00:00+00:00" class="md-ellipsis">2025년 5월 25일</time>
+                      </div>
+                    </li>
+                    
+                    
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 3v15h3V3zm3 2 4 13 3-1-4-13zM5 5v13h3V5zM3 19v2h18v-2z"/></svg>
+                          <span class="md-ellipsis">
+                            카테고리
+                            
+                              <a href="../../../../category/python/">python</a>, 
+                              <a href="../../../../category/django/">django</a>, 
+                              <a href="../../../../category/drf/">drf</a></span>
+                        </div>
+                      </li>
+                    
+                    
+                      
+                      <li class="md-nav__item">
+                        <div class="md-nav__link">
+                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 20a8 8 0 0 0 8-8 8 8 0 0 0-8-8 8 8 0 0 0-8 8 8 8 0 0 0 8 8m0-18a10 10 0 0 1 10 10 10 10 0 0 1-10 10C6.47 22 2 17.5 2 12A10 10 0 0 1 12 2m.5 5v5.25l4.5 2.67-.75 1.23L11 13V7z"/></svg>
+                          <span class="md-ellipsis">
+                            
+                              읽는시간 6분
+                            
+                          </span>
+                        </div>
+                      </li>
+                    
+                  </ul>
+                </nav>
+              </li>
+            </ul>
+            
+          </nav>
+          
+        </div>
+      </div>
+    </div>
+    <article class="md-content__inner md-typeset">
+      
+        
+  
+
+
+
+
+  <h1>DRF에서 Pagination 활용하기</h1>
+
+<p>나는 처음 웹 개발을 배울 때, 페이지내이션 구현을 배우며 page num 방식으로 배웠다. 이건  하나의 반환에서 몇 개의 데이터를 보여줄 지 지정하고, 요청에서 몇번째 부분을 가져오는지 지정하는 방식이다. 예를 들어 페이지 크기를 10, 페이지를 2로 지정하면, 11번째 데이터부터 20번째 데이터까지 반환하는 방식이다. 이후 limit-offset 방식이 있다는 것을 들었지만, 어떠한 이유에서인지 잘 사용하지 않게 되었다. 기본적으로는 이 두가지가 큰 차이가 없다고 느꼈지만, page num 방식으로 구현하는게 조금 더 깔끔해 보인다고 느꼈기 때문이다.</p>
+<p>그러다 Django, DRF의 공식문서를 살펴보던 중 DRF에서 기본 제공하는 페이지네이션 방식 중 하나로 cursor 페이지네이션 방식을 발견했고, 페이지네이션과 관련하여 조금 더 연구해보았다.</p>
+<!-- more -->
+
+<h2 id="_1">페이지네이션</h2>
+<p>페이지네이션은 많은 양의 데이터를 가져와서 보여주는 UI에서 데이터를 잘게 쪼개어 나누어 사용하는 방식이다.</p>
+<p>예를 들어 게시판에서 구현을 한다고 하자. 게시판의 수많은 글을 많은 데이터를 한번에 모두 호출하는것은 여러모로 비효율을 초래한다. DB에서 많은 데이터를 가져오는데도 문제가 발생하며, 큰 데이터를 API 반환으로 포함하는 것 또한 좋은 생각은 아니다. 그래서 10개에서 20개 정도의 데이터를 순차적으로 반환하여 데이터를 보여주는 방식을 선택한다.</p>
+<h2 id="page-num-limit-offset">page num 페이지네이션과 limit offset 페이지네이션</h2>
+<p>일반적으로 페이지네이션을 구현할 때 사용하는 두 가지 방식이다. 이 둘의 동작하는 방식은 거의 동일하고, 다만, 때에 따라 사용방식만 조금 달라질 수 있다.</p>
+<p>page num으로 동작할 때는 지금 조회할 페이지의 수와 페이지 크기를 받는다. 예를 들어 페이지당 20개씩 1페이지를 조회하면 처음부터 20개의 데이터, 20개씩 2페이지를 조회하면 21번째부터 40번째를 받는 방식이다. limit offet은 순서대로 정렬된 데이터에서 앞에서 부터 제외할 갯수인 offset과 반환할 데이터의 수인 limit으로 구성된다. 그래서 limit 20, offset 0으로 지정하면, 처음부터 20개의 데이터를 반환 받고, limit 20, offset 20으로 지정하면 20개를 제외한 21번째부터 40번째 데이터를 받는다.</p>
+<p>이 두방식 모두 SQL 쿼리나 Django queryset은 같은 방식으로 구현된다는 점이다. 예를 들어 <code>Artice</code>모델에서 최신순 <code>-created_at</code>로 조회하여 가져오는 경우 다음과 같은 Django queryset이 작성된다.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">Article</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-created_at&quot;</span><span class="p">)[</span><span class="mi">20</span><span class="p">:</span><span class="mi">40</span><span class="p">]</span>
+</span></code></pre></div>
+<p>이러한 방식으로 구현을 하는 경우 offser을 해야할 양이 많아진다면, 즉 뒷 페이지를 조회할수록 성능이 저하될 수 있다.</p>
+<h2 id="cursor">cursor 방식으로 페이지네이션 구현하기</h2>
+<p>cursor 방식은 조금 다르게 구현된다. Django queryset으로 표현하면 다음과 같이 나타낼 수 있다.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">Article</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">created_at__lt</span><span class="o">=</span><span class="s2">&quot;cursor&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-created_at&quot;</span><span class="p">)[:</span><span class="mi">20</span><span class="p">]</span>
+</span></code></pre></div>
+<p>특정 cursor 위치를 기반으로 그것보다 더 작은값(또는 필요에 따라서는 큰 값)을 필터 한 뒤 앞에서부터 특정 갯수만 조회하도록 하는 방식이다. 이렇게 되면 뒷페이지로 갈수록 많은 큰 값의 offset을 한 뒤 가져오는것이 아니라, 확실하게 사용하지 않을 데이터를 제외한 값 중 앞에서부터 특정 데이터만 가져오기때문에 더 효율적으로 동작 할 수 있다.</p>
+<p>그러나 정렬기준이 더 많아지는 경우 등에서는 이러한 구현이 복잡하거나 성능적으로 부담될 수 있다.</p>
+<h3 id="cursor_1">cursor 방식의 특징</h3>
+<p>cursor 방식으로 페이지네이션을 구현하면 다양한 장점이 있을 수 있다. 그러나 구현의 복잡성 말고도 몇가지 문제가 남아있다.</p>
+<p>그러나, cursor 방식으로 진행하는 경우, 몇가지 문제가 있을 수 있는데, 각 필드의 유일성과 인덱스와 같은 문제이다.
+cursor 방식으로 진행하면 보통 유일함을 보장하는 컬럼에 대하여 적용한다. 일반적으로 id, created_at과 같은 값이 있다. 그런데 만약 created_at으로 지정을 했는데, 이 값이 유일하지 않을 수 있다면, cursor를 제작하고 반환값을 만들어내는데 문제가 있을 수 있다. 이 경우, 다른 유일한 값, 특히 primary key와 함께 사용하도록 구현함으로 해결할 수 있다.
+또 다른 문제는 인덱스와 관련한 문제이다. cursor로 접급하게 되면, 특정위치에서부터 탐색하게 된다. 예를 들어, created_at을 내림차순(시간 역순)으로 정렬하고, 특정시간 이전에 작성된 것 중에, 10개를 반환한다라는 방식으로 지정한다. 그런데 index가 없다면 정렬하는데에도 전체 탐색을 하는 비용이 발생하고, 특정 시간 이전에 작성된 경우를 찾기 위해서 전체 탐색이 추가로 필요하게 된다. </p>
+<h3 id="django-cursor">Django에서 cursor방식으로 구현해보기</h3>
+<p>limit offset 방식으로 구현하는걸 한번 생각해보면, 파라미터로 <code>?limit=20&amp;offset=20</code>과 같이 입력받을 수 있다. 그러면 이를 queryset에 바로 대입함으로서 결과물을 받을 수 있다</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="k">class</span><span class="w"> </span><span class="nc">Article</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">Model</span><span class="p">):</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>    <span class="n">created_at</span> <span class="o">=</span> <span class="n">models</span><span class="o">.</span><span class="n">DateField</span><span class="p">(</span><span class="n">auto_now_add</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<p>다음과 같은 Article 모델이 있다고 하고, 필드로 PK 역할을 하는 id와 생성일 created_at이 있다고 하자. 그리고 데이터는 다음과 같이 있다고 하자. (예시를 나타내기 위한 편의를 위해 생성일자를 시간까지 표기하는 대신 날짜만 표기했다)</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>created_at</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2025-05-01</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2025-05-02</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2025-05-03</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2025-05-04</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2025-05-05</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2025-05-06</td>
+</tr>
+</tbody>
+</table>
+<p>그러면 최신순으로 첫 번째 페이지를 가져올 때는 다음과 같은 queryset을 작성할 수 있다. (여기서부터 한 페이지를 3개로 가정한다)</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">articles</span> <span class="o">=</span> <span class="n">Article</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-created_at&quot;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+</span></code></pre></div>
+<p>첫 번째 페이지를 가져온 후, 두번째 페이지를 가져올 때 id=3번 게시물부터 시작하여 더 과거에 생성된 게시물들을 가져와야한다. 그런데 위에서 얻은 <code>articles</code> queryset을 생각해보면, 2025년 5월 4일자 게시물이 가장 과거의 게시물이였고, 그 다음 게시물을 조회할때는 해당 날자 이전의 게시물부터 조회하도록 시작하여 가져올 수 있다. 따라서 다음과 같은 queryset을 작성할 수 있다.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="n">articles</span> <span class="o">=</span> <span class="n">Article</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">created_at__le</span><span class="o">=</span><span class="s2">&quot;2025-05-04&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s2">&quot;-created_at&quot;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+</span></code></pre></div>
+<p>그러면 첫 번째 페이를 조회했을 때, 그 다음 페이지를 조회하기 위해서는 다음과 같은 정보들이 필요하게 된다.</p>
+<ul>
+<li>첫 번째 페이지의 가장 오래된 생성일 (위의 예시에서 <code>2025-05-04</code>)</li>
+<li>정렬의 방식 (<code>-created_at</code>)</li>
+</ul>
+<p>그러면 간단하게 첫 째 반황에서 다음 페이지를 알려줄 때, <code>?cursor=2025-05-04,-created_at</code>과 같은 방식의 파라미터를 추가함으로서 알려줄 수 있다. (여기서 정렬 방식은 기본정렬이 최신순이라면 별도로 알려줄 필요가 없겠지만, 기본정렬방식이 아니라면 추가로 기록이 필요할 수 있다.)</p>
+<h4 id="cursor_2">cursor의 중복 문제</h4>
+<p>만약에 생성일이 다음과 같이 중복이 발생했다고 하자</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>created_at</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2025-05-01</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2025-05-02</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2025-05-03</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2025-05-03</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2025-05-05</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2025-05-06</td>
+</tr>
+</tbody>
+</table>
+<p>그러면 위와 같은 방식으로 조회하면 문제가 된다. 이는 다른 방식의 페이지네이션에서도 문제가 되는데, 이러한 경우 주로 id와 같은 필드를 함께 사용하여 정렬한다.</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>articles = Article.objects.all().order_by(&quot;-created_at&quot;, &quot;-id&quot;)[:3]
+</span></code></pre></div>
+<p>그러면, 첫 번째 페이지를 반환한 후, 다음페이지를 알려줄 때, <code>?cursor=2025-05-03,4,-created_at,-id</code>와 같은 방식으로 알려줄 수 있다.
+그런데 이러한 방식으로 cursor에 대한 모든 정보를 반환에 추가하지 않기 위해 cursor을 암호화하여 반환하기도 한다.</p>
+<h3 id="drf-cursor">DRF에서 구현된 cursor 페이지네이션</h3>
+<p>DRF에서는 <code>pagination.CursorPagination</code>으로 구현이 되어있다. 상세한 구현은 다음과 같이 되어 있다.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">Cursor</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Cursor&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;offset&#39;</span><span class="p">,</span> <span class="s1">&#39;reverse&#39;</span><span class="p">,</span> <span class="s1">&#39;position&#39;</span><span class="p">])</span>
+</span></code></pre></div>
+<p>DRF에서는 cursor를 offset, reverse, position이라는 세 개의 값을가지고 구현한다. <sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">get_next_link</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>    <span class="o">...</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>    <span class="n">cursor</span> <span class="o">=</span> <span class="n">Cursor</span><span class="p">(</span><span class="n">offset</span><span class="o">=</span><span class="n">offset</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">encode_cursor</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</span></code></pre></div>
+<p>다음 페이지 링크를 만들 때, 위의 cursor를 생성하여 전달한다. <sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="k">def</span><span class="w"> </span><span class="nf">encode_cursor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cursor</span><span class="p">):</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>    <span class="n">tokens</span> <span class="o">=</span> <span class="p">{}</span>
+</span><span id="__span-8-3"><a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>    <span class="k">if</span> <span class="n">cursor</span><span class="o">.</span><span class="n">offset</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+</span><span id="__span-8-4"><a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>        <span class="n">tokens</span><span class="p">[</span><span class="s1">&#39;o&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">cursor</span><span class="o">.</span><span class="n">offset</span><span class="p">)</span>
+</span><span id="__span-8-5"><a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>    <span class="k">if</span> <span class="n">cursor</span><span class="o">.</span><span class="n">reverse</span><span class="p">:</span>
+</span><span id="__span-8-6"><a id="__codelineno-8-6" name="__codelineno-8-6" href="#__codelineno-8-6"></a>        <span class="n">tokens</span><span class="p">[</span><span class="s1">&#39;r&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>
+</span><span id="__span-8-7"><a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a>    <span class="k">if</span> <span class="n">cursor</span><span class="o">.</span><span class="n">position</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+</span><span id="__span-8-8"><a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a>        <span class="n">tokens</span><span class="p">[</span><span class="s1">&#39;p&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">cursor</span><span class="o">.</span><span class="n">position</span>
+</span><span id="__span-8-9"><a id="__codelineno-8-9" name="__codelineno-8-9" href="#__codelineno-8-9"></a>
+</span><span id="__span-8-10"><a id="__codelineno-8-10" name="__codelineno-8-10" href="#__codelineno-8-10"></a>    <span class="n">querystring</span> <span class="o">=</span> <span class="n">parse</span><span class="o">.</span><span class="n">urlencode</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">doseq</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span><span id="__span-8-11"><a id="__codelineno-8-11" name="__codelineno-8-11" href="#__codelineno-8-11"></a>    <span class="n">encoded</span> <span class="o">=</span> <span class="n">b64encode</span><span class="p">(</span><span class="n">querystring</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;ascii&#39;</span><span class="p">)</span>
+</span><span id="__span-8-12"><a id="__codelineno-8-12" name="__codelineno-8-12" href="#__codelineno-8-12"></a>    <span class="k">return</span> <span class="n">replace_query_param</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_url</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cursor_query_param</span><span class="p">,</span> <span class="n">encoded</span><span class="p">)</span>
+</span></code></pre></div>
+<p>마지막으로 cursor를 인코딩하여 링크의 파라미터로 제작하여 API반환에 추가한다.<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup></p>
+<div class="language-json highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a><span class="p">{</span>
+</span><span id="__span-9-2"><a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span><span class="nt">&quot;next&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;...?cursor=cD0yMDI1LTA1LTAxKzA4JTNBMjglM0E1Ny4wNDc4ODYlMkIwMCUzQTAw&quot;</span><span class="p">,</span>
+</span><span id="__span-9-3"><a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span><span class="err">...</span>
+</span><span id="__span-9-4"><a id="__codelineno-9-4" name="__codelineno-9-4" href="#__codelineno-9-4"></a><span class="p">}</span>
+</span></code></pre></div>
+<p>그래서 마지막으로 이에대한 반환으로 cursor 파라미터가 다음와 같이 지정된 반환을 받게된다.
+만약 DRF의 이런 기능을 사용하지 않고 구현한다고 하면, 특정위치를 판단할 수 있는 값을 기반으로 위와 같은 cursor를 생성 및 활용할 수 있어야 한다.</p>
+<h2 id="_2">그렇다면 어떤 방식을 사용해야할까</h2>
+<p>그렇다면 나의 프로젝트에서는 어떠한 방식을 사용해야할까? 물론 정답은 프로젝트마다 모두 달라지겠지만, 어느정도 경우를 나누어 적합한 방법을 추론해볼 수 있다.</p>
+<p>일반적인 경우에는 page num 방식이나, limit offset방식을 적용해도 충분할 것이다. 직관적이고, 구현에도 큰 어려움이 없다.</p>
+<h3 id="_3">데이터 중복</h3>
+<p>그러나 위의 두 방식은 데이터의 중복이 발생할 수 있다.</p>
+<table>
+<thead>
+<tr>
+<th>id</th>
+<th>created_at</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>2025-05-01</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2025-05-02</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2025-05-03</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2025-05-04</td>
+</tr>
+<tr>
+<td>5</td>
+<td>2025-05-05</td>
+</tr>
+<tr>
+<td>6</td>
+<td>2025-05-06</td>
+</tr>
+</tbody>
+</table>
+<p>위의 데이터를 최신순으로 3개씩 조회한다고 하면, 처음에는 <code>6, 5, 4</code>번 글을 조회하게 된다. 이 때 새로운 글이 작성되어 id=7, created_at=2025-05-07로 만들어진 상태에서 2페이지를 조회하는 경우, 1페이제는 <code>7, 6, 5</code>가 조회되어야 하기 때문에 2페이지에는 <code>4, 3, 2</code>번이 조회된다. 그러면 1페이지에서 봤던 5번 글이 2페이지에서도 중복으로 조회된다.</p>
+<h3 id="cursor_3">cursor 방식으로 해결해보기</h3>
+<p>이러한 경우, cursor방식으로 지정하게 되면, 게시글의 중복없이 목록을 만들어 낼 수 있다. 특히 무한스크롤 방식으로 구현한 경우 목록이 계속 중첩되어 나올 수 있어 조금 더 유용해 보일 수 있다.</p>
+<p>그렇다고 하여 cursor방식이 만능인 것은 아니다. cursor를 다루는데 있는 추가적인 비용이 있을 수 있고, 데이터 양이 적은 경우, 단순 limit-offset으로 진행하는게 더 빠를 수 있다.</p>
+<p>또한, cursor를 사용하는 경우 특정 페이지부터의 조회가 쉽지 않을 수 있다. DRF의 경우 등에서 cursor는 보통 암호화 한 키를 사용하고, 클라이언트에서 이 암호를 알 수 없다면, 1페이지가 아니라 특정 페이지를 호출하는것이 쉽지 않다는 것이다. 또한 curosr에 정렬, 필터 등이 모두 포함되다보니, 유동적인 페이지 크기를 적용하는것도 쉽지 않다. (유동적인 페이지 크기를 지정하려 한다면 그러한 값이 cursor에 포함되어야 하는데, 이는 추가적인 비용을 필요로 하기 때문에 좋지 않다.)</p>
+<p>로컬에서 DRF로 페이지네이션을 테스트 한 경우, 인덱스가 없는 경우에 10만개의 데이터를 시간순 정렬로 1000페이지를 조회하는 경우에 대해 테스트를 해본 결과, 1000페이지를  순서대로가져오는데 page num, limit offset 방싱 모두 6.5초 정도로 유사하게 나온 반면, cursor방식으로는 14.3초가 걸렸다. 반면 인덱스가 추가되면 page num, limit offset방식은 모두 3.1초로 더 빨라졌고, cursor방식은 이보다 더 빠른 2.7초 정도가 걸렸다. 그래서 여러 필드에 대해 정렬을 하는 경우에는 인덱스가 있는지 등을 잘 고려해야한다. (물론 이 경우는 임의의 테스트 중 하나이고, 실제 경과는 다를 수 있다. 그러나 일반적으로 정렬 결과의 앞 쪽 데이터는 유사하지만, 뒷페이지로 갈수록 cursor 방식이 빠른 편이다.)</p>
+<h3 id="_4">요약</h3>
+<p>그래서 상황에 따라 적합한 방식으로 적용이 필요하다. 
+만약 많은 데이터양때문에 cursor방식을 해야 하는 것이라면, 한번에 조회가능한 데이터의 최대 양을 제한하는 방식도 가능하다. 예를 들어 최대 1년단위로 페이지네이션을 만들어가는 방식도 적용할 수 있다.</p>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p><a href="https://github.com/encode/django-rest-framework/blob/985dd732e058644f6e875de76205a392ce4241dd/rest_framework/pagination.py#L130">DRF pagination.py Cursor</a>&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p><a href="https://github.com/encode/django-rest-framework/blob/985dd732e058644f6e875de76205a392ce4241dd/rest_framework/pagination.py#L698-L749">DRF pagination.py get_next_link()</a>&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p><a href="https://github.com/encode/django-rest-framework/blob/985dd732e058644f6e875de76205a392ce4241dd/rest_framework/pagination.py#L871-L885">DRF pagination.py encode_cursor()</a>&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+  
+
+
+
+      
+    </article>
+  </div>
+
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../../../../..", "features": ["search.suggest", "search.highlight", "navigation.sections", "navigation.indexes"], "search": "../../../../../assets/javascripts/workers/search.d50fe291.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../../../../../assets/javascripts/bundle.13a4f30d.min.js"></script>
+      
+    
+  </body>
+</html>
